@@ -6,7 +6,7 @@ plugins {
 
 group = "com.soCompany"
 version = "0.0.1-SNAPSHOT"
-description = "data-scraper"
+description = "data-processor"
 
 java {
     toolchain {
@@ -19,14 +19,11 @@ repositories {
 }
 
 dependencies {
-    // Include common-events
-    implementation(project(":common-events"))
     implementation("org.springframework.boot:spring-boot-starter-kafka")
-    implementation("org.springframework.boot:spring-boot-starter-webclient")
     implementation("org.apache.kafka:kafka-streams")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testCompileOnly("org.projectlombok:lombok")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testAnnotationProcessor("org.projectlombok:lombok")

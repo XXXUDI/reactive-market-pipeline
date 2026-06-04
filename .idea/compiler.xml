@@ -7,16 +7,38 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.46/a5cfe99fdf320e84955ef653f2ce1bf789d11385/lombok-1.18.46.jar" />
         </processorPath>
-        <module name="data-scraper.main" />
-        <module name="data-scraper.test" />
+        <module name="market-data-platform.data-scraper.test" />
+        <module name="market-data-platform.data-scraper.main" />
+        <module name="market-data-platform.data-processor.test" />
+        <module name="market-data-platform.data-processor.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="25">
+      <module name="common-events" target="25" />
+      <module name="common-events.main" target="25" />
+      <module name="common-events.test" target="25" />
+      <module name="data-processor" target="25" />
+      <module name="data-processor.main" target="25" />
+      <module name="data-processor.test" target="25" />
+      <module name="data-scraper" target="25" />
+      <module name="data-scraper.main" target="25" />
+      <module name="data-scraper.test" target="25" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="data-processor" options="-parameters" />
+      <module name="data-processor.main" options="-parameters" />
+      <module name="data-processor.test" options="-parameters" />
       <module name="data-scraper" options="-parameters" />
       <module name="data-scraper.main" options="-parameters" />
       <module name="data-scraper.test" options="-parameters" />
+      <module name="market-data-platform.data-processor" options="-parameters" />
+      <module name="market-data-platform.data-processor.main" options="-parameters" />
+      <module name="market-data-platform.data-processor.test" options="-parameters" />
+      <module name="market-data-platform.data-scraper" options="-parameters" />
+      <module name="market-data-platform.data-scraper.main" options="-parameters" />
+      <module name="market-data-platform.data-scraper.test" options="-parameters" />
     </option>
   </component>
 </project>
