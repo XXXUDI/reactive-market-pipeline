@@ -21,15 +21,22 @@ repositories {
 dependencies {
     // Include common-events
     implementation(project(":common-events"))
-    implementation("org.springframework.boot:spring-boot-starter-kafka")
-    implementation("org.springframework.boot:spring-boot-starter-webclient")
-    implementation("org.apache.kafka:kafka-streams")
+    implementation(project(":common-kafka"))
+    // Reactive Kafka
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("io.projectreactor.kafka:reactor-kafka:1.3.25")
+    // WebClient
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    // Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
+    // = = = = = = Test dependencies = = = = = =
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testCompileOnly("org.projectlombok:lombok")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testAnnotationProcessor("org.projectlombok:lombok")
+
+    testImplementation("io.projectreactor:reactor-test")
 }
 
 tasks.withType<Test> {

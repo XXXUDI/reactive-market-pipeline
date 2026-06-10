@@ -1,1 +1,5 @@
-spring.application.name=data-scraper
+spring:
+  application:
+    name: data-scraper
+  kafka:
+    bootstrap-servers: localhost:9092
