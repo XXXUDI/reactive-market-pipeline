@@ -7,8 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DataScraperApplication {
 
     static void main(String[] args) {
-
         SpringApplication.run(DataScraperApplication.class, args);
+
+
+
     }
 
 }

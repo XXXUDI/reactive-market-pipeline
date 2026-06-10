@@ -37,6 +37,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok")
 
     testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {
