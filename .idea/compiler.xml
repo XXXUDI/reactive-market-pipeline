@@ -27,6 +27,9 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="common-kafka" options="-parameters" />
+      <module name="common-kafka.main" options="-parameters" />
+      <module name="common-kafka.test" options="-parameters" />
       <module name="data-processor" options="-parameters" />
       <module name="data-processor.main" options="-parameters" />
       <module name="data-processor.test" options="-parameters" />
