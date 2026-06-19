@@ -28,7 +28,7 @@ public class AggTradeScraper implements Scraper {
                 session ->
                         session.receive()
                                 .map(WebSocketMessage::getPayloadAsText)
-                                .log()
+                                //.log()
                                 .map(AggTradeMapper::map)
                                 .flatMap(kafkaProducerService::sendRawTradeEvent)
                                 .doOnError(error -> error.printStackTrace())

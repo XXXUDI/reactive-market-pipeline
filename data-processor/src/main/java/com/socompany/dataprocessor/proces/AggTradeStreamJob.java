@@ -10,6 +10,7 @@ import com.socompany.dataprocessor.serialization.EnrichedTradeSerializationSchem
 import com.socompany.dataprocessor.serialization.SymbolKeySerializationSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
@@ -95,7 +96,7 @@ public class AggTradeStreamJob implements CommandLineRunner {
      * Aggregator to calculate a VWAP (Volume-Weighted Average Price) and identify the direction of the trade.
      */
     private static class TradeAggregator implements
-            org.apache.flink.api.common.functions.AggregateFunction<AggTradeEvent, TradeAccumulator, EnrichedTrade> {
+            AggregateFunction<AggTradeEvent, TradeAccumulator, EnrichedTrade> {
 
         @Override
         public TradeAccumulator createAccumulator() {
