@@ -116,6 +116,7 @@ Example output (`market.agg-trades.enriched` topic):
 <div align="center">
 <img src="docs/img_2.png">
 </div>
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 You can implement/enhance the existing features or add new ones (new processors, new consumers, etc.).
