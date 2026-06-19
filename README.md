@@ -118,9 +118,11 @@ Example output (`market.agg-trades.enriched` topic):
 </div>
 
 ## Contributing
+
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 You can implement/enhance the existing features or add new ones (new processors, new consumers, etc.).
 You can reach me at [LinkedIn](https://www.linkedin.com/in/aleksander-slabunov-937238281/) or Discord: `sash.ik`
+
 ---
 This application is published under MIT License. This project is a demo and is not intended for production use.
 You can use it for educational purposes.
