@@ -19,8 +19,6 @@ public class KafkaConfiguration {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-
-    // TODO: The producer serializers are swapped/incorrect for the declared KafkaSender<String, AggTradeEvent>. The key serializer should be StringSerializer and the value serializer should be JsonSerializer (for AggTradeEvent). With the current config, keys will not serialize as String and values will not serialize as JSON.
     @Bean
     public KafkaSender<String, AggTradeEvent> kafkaSender() {
         Map<String, Object> props = new HashMap<>();

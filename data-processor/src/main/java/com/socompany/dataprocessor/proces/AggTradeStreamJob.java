@@ -6,6 +6,8 @@ import com.socompany.commonevents.raw.AggTradeEvent;
 import com.socompany.commonevents.utils.TradeDirection;
 import com.socompany.dataprocessor.config.KafkaConfiguration;
 import com.socompany.dataprocessor.mapper.JsonToAggEventMapper;
+import com.socompany.dataprocessor.serialization.EnrichedTradeSerializationSchema;
+import com.socompany.dataprocessor.serialization.SymbolKeySerializationSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
@@ -17,9 +19,11 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.streaming.util.serialization.SerializationSchema;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -28,11 +32,9 @@ import java.math.RoundingMode;
 public class AggTradeStreamJob implements CommandLineRunner {
 
     private final KafkaConfiguration kafkaConfig;
-    private final ObjectMapper objectMapper;
 
     public AggTradeStreamJob(KafkaConfiguration kafkaConfig) {
         this.kafkaConfig = kafkaConfig;
-        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -44,7 +46,6 @@ public class AggTradeStreamJob implements CommandLineRunner {
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        // Kafka Source для читання з топіку "market.agg-trade.raw"
         KafkaSource<String> kafkaSource = KafkaSource.<String>builder()
                 .setBootstrapServers(kafkaConfig.getBootstrapServers())
                 .setTopics(kafkaConfig.getInputTopic())
@@ -53,34 +54,29 @@ public class AggTradeStreamJob implements CommandLineRunner {
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
 
-        // Створення потоку даних
         DataStream<String> rawStream = env.fromSource(
                 kafkaSource,
                 WatermarkStrategy.noWatermarks(),
                 "Kafka Source"
         );
 
-        // Парсинг JSON в AggTradeEvent
         DataStream<AggTradeEvent> parsedStream = rawStream
                 .map(new JsonToAggEventMapper())
                 .name("Parse JSON to AggTradeEvent");
 
-        // Групування по символу і обробка у віконному режимі (наприклад, 5 секунд)
         DataStream<EnrichedTrade> enrichedStream = parsedStream
                 .keyBy(AggTradeEvent::symbol)
                 .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
                 .aggregate(new TradeAggregator())
                 .name("Aggregate and Enrich Trades");
 
-        // Kafka Sink для запису в топік "market.agg-trade.enriched"
         KafkaSink<EnrichedTrade> kafkaSink = KafkaSink.<EnrichedTrade>builder()
                 .setBootstrapServers(kafkaConfig.getBootstrapServers())
                 .setRecordSerializer(
-                        KafkaRecordSerializationSchema.builder()
+                        KafkaRecordSerializationSchema.<EnrichedTrade>builder()
                                 .setTopic(kafkaConfig.getOutputTopic())
-                                .setValueSerializationSchema(
-                                        (element, context) -> objectMapper.writeValueAsBytes(element)
-                                )
+                                .setKeySerializationSchema(new SymbolKeySerializationSchema())
+                                .setValueSerializationSchema(new EnrichedTradeSerializationSchema())
                                 .build()
                 )
                 .build();
@@ -91,8 +87,12 @@ public class AggTradeStreamJob implements CommandLineRunner {
         env.execute("AggTrade Stream Processing Job");
     }
 
+
+
+
+
     /**
-     * Aggregator для обчислення VWAP, визначення тренду та створення EnrichedTrade
+     * Aggregator to calculate a VWAP (Volume-Weighted Average Price) and identify the direction of the trade.
      */
     private static class TradeAggregator implements
             org.apache.flink.api.common.functions.AggregateFunction<AggTradeEvent, TradeAccumulator, EnrichedTrade> {
@@ -126,16 +126,17 @@ public class AggTradeStreamJob implements CommandLineRunner {
 
         @Override
         public EnrichedTrade getResult(TradeAccumulator acc) {
-            // Обчислюємо VWAP (Volume-Weighted Average Price)
+            // Calculate VWAP (Volume-Weighted Average Price)
             BigDecimal vwap = acc.totalQuantity.compareTo(BigDecimal.ZERO) > 0
                     ? acc.totalValue.divide(acc.totalQuantity, 8, RoundingMode.HALF_UP)
                     : BigDecimal.ZERO;
 
-            // Визначаємо напрямок тренду на основі співвідношення buy/sell обсягів
+            // Identify the direction of the trade based on buy/sell volume
             TradeDirection direction = acc.buyVolume.compareTo(acc.sellVolume) >= 0
                     ? TradeDirection.BUY
                     : TradeDirection.SELL;
 
+            // Return the EnrichedTrade
             return new EnrichedTrade(
                     acc.symbol,
                     acc.lastPrice,
@@ -154,7 +155,7 @@ public class AggTradeStreamJob implements CommandLineRunner {
             a.totalValue = a.totalValue.add(b.totalValue);
             a.buyVolume = a.buyVolume.add(b.buyVolume);
             a.sellVolume = a.sellVolume.add(b.sellVolume);
-            a.lastPrice = b.lastPrice; // Беремо останню ціну з другого акумулятора
+            a.lastPrice = b.lastPrice;
             a.windowEnd = Math.max(a.windowEnd, b.windowEnd);
             a.windowStart = Math.min(a.windowStart, b.windowStart);
             return a;

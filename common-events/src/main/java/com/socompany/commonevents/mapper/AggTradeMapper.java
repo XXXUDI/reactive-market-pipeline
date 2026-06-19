@@ -8,12 +8,12 @@ import java.time.Instant;
 public class AggTradeMapper {
 
     public static AggTradeEvent map(String data) {
-        // {"e":"trade","E":1779575491864,"s":"BTCUSDT","t":6317848782,"p":"76511.89000000","q":"0.00007000","T":1779575491864,"m":true,"M":true}
+        // {"e":"aggTrade","E":1779575491864,"s":"BTCUSDT","a":6317848782,"p":"76511.89000000","q":"0.00007000","f":123,"l":456,"T":1779575491864,"m":true,"M":true}
 
         //String eventType = extractString(data, "\"e\":");
         //Long eventTimeMs = extractLong(data, "\"E\":");
         String symbol = extractString(data, "\"s\":");
-        Long aggregateTradeId = extractLong(data, "\"t\":");
+        Long aggregateTradeId = extractLong(data, "\"a\":");
         BigDecimal price = extractBigDecimal(data, "\"p\":");
         BigDecimal quantity = extractBigDecimal(data, "\"q\":");
         //Long firstTradeId = extractLong(data, "\"f\":");

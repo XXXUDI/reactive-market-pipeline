@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="KafkaClientState">
+    <option name="settings">
+      <set>
+        <ClusterConfig>
+          <option name="commonConfigs">
+            <map>
+              <entry key="bootstrap.servers" value="localhost:29092" />
+              <entry key="security.protocol" value="PLAINTEXT" />
+              <entry key="ssl.endpoint.identification.algorithm" value="" />
+            </map>
+          </option>
+          <option name="connectionName" value="util-kafka-1" />
+          <option name="id" value="f01f72e3-ca4e-40a7-a4cb-954f1a01e03b" />
+          <option name="createdAt" value="2026-06-12T18:30:35.772219100Z" />
+        </ClusterConfig>
+      </set>
+    </option>
+  </component>
+</project>

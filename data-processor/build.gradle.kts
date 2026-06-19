@@ -25,12 +25,12 @@ dependencies {
     implementation(project(":common-kafka"))
 
     // Apache Flink
-    implementation("org.apache.flink:flink-streaming-java:1.19.0")
-    implementation("org.apache.flink:flink-clients:1.19.0")
+    implementation("org.apache.flink:flink-streaming-java:1.20.0")
+    implementation("org.apache.flink:flink-clients:1.20.0")
 
     // Flink Kafka Connector
-    //implementation("org.apache.flink:flink-connector-kafka:3.1.0-1.19")
-    implementation("org.apache.flink:flink-connector-kafka:5.0.0-2.2")
+    implementation("org.apache.flink:flink-connector-kafka:3.3.0-1.20")
+    implementation("org.apache.flink:flink-connector-base:1.20.0")
 
     // Jackson for serialization / deserialization
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
